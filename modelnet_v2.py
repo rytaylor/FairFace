@@ -29,7 +29,7 @@ def rect_to_bb(rect):
 
 def train_validate_model():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    summary(models.resnet101(False).cuda())
+    summary(models.resnet101(False).cuda(),(3, 256, 256))
 
     
 
