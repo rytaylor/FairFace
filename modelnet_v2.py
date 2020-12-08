@@ -119,8 +119,8 @@ if __name__ == "__main__":
         ]),
     }
 
-    train_paths = pd.read_csv('fairface_label_train')
-    val_paths = pd.read_csv('fairafce_label_val')
+    train_paths = pd.read_csv('fairface_label_train.csv')
+    val_paths = pd.read_csv('fairafce_label_val.csv')
 
     print(train_paths[0])
     '''
