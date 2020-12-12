@@ -52,7 +52,7 @@ if __name__ == "__main__":
     train_paths = pd.read_csv('./fairface_label_train.csv')
     val_paths = pd.read_csv('./fairface_label_val.csv')
 
-    print(train_paths[0])
+    #print(train_paths[0])
 
     model = torch.load('res34_fair_align_multi_7_20190809.pt')
 
