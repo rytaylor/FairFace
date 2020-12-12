@@ -55,8 +55,8 @@ if __name__ == "__main__":
     #print(train_paths[0])
 
     model = torch.load('res34_fair_align_multi_7_20190809.pt')
-
-    print(model)
+    l = [module for module in model.modules() if type(module) != nn.Sequential]
+    print(l)
 
     
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
