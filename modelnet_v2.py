@@ -13,6 +13,7 @@ import os
 import copy
 import dlib
 import pandas as pd
+import torchvision.models as models
 
 import sys
 sys.path.append('/usr/local/lib/python3.6/dist-packages')
@@ -34,29 +35,12 @@ if __name__ == "__main__":
     dlib.DLIB_USE_CUDA = True
     print("using CUDA?: %s" % dlib.DLIB_USE_CUDA)
     #Run training & validation
-    data_transforms = {
-        'train': transforms.Compose([
-            transforms.RandomResizedCrop(224),
-            transforms.RandomHorizontalFlip(),
-            transforms.ToTensor(),
-            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-        ]),
-        'val': transforms.Compose([
-            transforms.Resize(256),
-            transforms.CenterCrop(224),
-            transforms.ToTensor(),
-            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-        ]),
-    }
 
     train_paths = pd.read_csv('./fairface_label_train.csv')
     val_paths = pd.read_csv('./fairface_label_val.csv')
 
-    #print(train_paths[0])
+    resnet18 = models.resnet18()
 
-    model = torch.load('res34_fair_align_multi_7_20190809.pt')
-    l = [module for module in model.modules() if type(module) != nn.Sequential]
-    print(l)
+    print(resnet18)
 
-    
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
