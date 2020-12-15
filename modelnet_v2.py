@@ -6,7 +6,8 @@ import torch.optim as optim
 from torch.optim import lr_scheduler
 import numpy as np
 import torchvision
-from torchvision import datasets, models, transforms
+from torchvision import datasets, models
+import torchvision.transforms as transforms
 from torch.utils.data import Dataset as Dataset
 import matplotlib.pyplot as plt
 import time
@@ -68,12 +69,23 @@ if __name__ == "__main__":
     print("using CUDA?: %s" % dlib.DLIB_USE_CUDA)
     #Run training & validation
 
-    train_paths = FaceImageDataset(csv_path='./fairface_label_train.csv',
-                                    rootdir='./')
+    train_data = FaceImageDataset(csv_path='./fairface_label_train.csv',
+                                    rootdir='./',
+                                    transforms.Compose([
+                                        transforms.ToPILImage()
+                                        transforms.Resize((224, 224)),
+                                        transforms.RandomCrop(224),
+                                        transforms.ToTensor()
+                                    ]))
 
     #format: file,age,gender,race,service_test
 
-    print(train_paths.__getitem__(0))
+    print(train_data.__getitem__(0))
+
+    dataloader = torch.utils.data.DataLoader(train_data, batch_size=4,
+                                            shuffle=True, num_workers=0)
+
+    print(dataloader)
 
     '''
     
