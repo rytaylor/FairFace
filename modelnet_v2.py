@@ -68,7 +68,7 @@ if __name__ == "__main__":
     dlib.DLIB_USE_CUDA = True
     print("using CUDA?: %s" % dlib.DLIB_USE_CUDA)
     #Run training & validation
-
+    #format: file,age,gender,race,service_test
     train_data = FaceImageDataset(csv_path='./fairface_label_train.csv',
                                     rootdir='./',
                                     transform = transforms.Compose([
@@ -77,24 +77,80 @@ if __name__ == "__main__":
                                         transforms.RandomCrop(224),
                                         transforms.ToTensor()
                                     ]))
-
-    #format: file,age,gender,race,service_test
-
-    print(train_data.__getitem__(0))
-
-    dataloader = torch.utils.data.DataLoader(train_data, batch_size=4,
+    train_dataloader = torch.utils.data.DataLoader(train_data, batch_size=4,
+                                            shuffle=True, num_workers=0)
+    val_data = FaceImageDataset(csv_path='./fairface_label_val.csv',
+                                    rootdir='./',
+                                    transform = transforms.Compose([
+                                        transforms.ToPILImage(),
+                                        transforms.Resize((224, 224)),
+                                        transforms.RandomCrop(224),
+                                        transforms.ToTensor()
+                                    ]))
+    val_dataloader = torch.utils.data.DataLoader(val_data, batch_size=4,
                                             shuffle=True, num_workers=0)
 
-    print(dataloader)
-
-    '''
-    
-    resnet18 = models.resnet18()
-    loss_func = nn.MSELoss(reduction='sum')
-    learning_rate = 0.0001
-
-    resnet18()
-
-    print(resnet18)
-    '''
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+
+    model = models.resnet50(pretrained=True)
+
+    for param in model.parameters():
+        param.requires_grad = False
+        
+    model.fc = nn.Sequential(nn.Linear(2048, 512),
+                                    nn.ReLU(),
+                                    nn.Dropout(0.2),
+                                    nn.Linear(512, 10),
+                                    nn.LogSoftmax(dim=1))
+    criterion = nn.NLLLoss()
+    optimizer = optim.Adam(model.fc.parameters(), lr=0.001)
+    model.to(device)
+
+
+    '''predefined code'''
+
+    epochs = 1
+    steps = 0
+    running_loss = 0
+    print_every = 10
+    train_losses, test_losses = [], []
+    for epoch in range(epochs):
+        for inputs, labels in train_dataloader:
+            steps += 1
+            inputs, labels = inputs.to(device), labels.to(device)
+            optimizer.zero_grad()
+            logps = model.forward(inputs)
+            loss = criterion(logps, labels)
+            loss.backward()
+            optimizer.step()
+            running_loss += loss.item()
+            
+            if steps % print_every == 0:
+                test_loss = 0
+                accuracy = 0
+                model.eval()
+                with torch.no_grad():
+                    for inputs, labels in val_dataloader:
+                        inputs, labels = inputs.to(device),
+                                        labels.to(device)
+                        logps = model.forward(inputs)
+                        batch_loss = criterion(logps, labels)
+                        test_loss += batch_loss.item()
+                        
+                        ps = torch.exp(logps)
+                        top_p, top_class = ps.topk(1, dim=1)
+                        equals = 
+                            top_class == labels.view(*top_class.shape)
+                        accuracy +=
+                    torch.mean(equals.type(torch.FloatTensor)).item()
+                train_losses.append(running_loss/len(train_dataloader))
+                val_losses.append(test_loss/len(val_dataloader))                    
+                print(f"Epoch {epoch+1}/{epochs}.. "
+                    f"Train loss: {running_loss/print_every:.3f}.. "
+                    f"Test loss: {test_loss/len(val_dataloader):.3f}.. "
+                    f"Test accuracy: {accuracy/len(val_dataloader):.3f}")
+                running_loss = 0
+                model.train()
+    torch.save(model, 'fairface_res.pth')
+    
