@@ -15,6 +15,7 @@ import copy
 import dlib
 import pandas as pd
 import torchvision.models as models
+from skimage import io, transform
 
 import sys
 sys.path.append('/usr/local/lib/python3.6/dist-packages')
