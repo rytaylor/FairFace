@@ -55,10 +55,10 @@ class FaceImageDataset(Dataset):
         race = self.csv_file.iloc[index, 3]
         service_test = self.csv_file.iloc[index, 4]
 
-        sample = {'image': image, 'age': age, 'gender': gender, 'race': race, 'service_test': service_test}
-
         if(self.transform):
-            sample = self.transform(sample)
+            image = self.transform(image)
+
+        sample = {'image': image, 'age': age, 'gender': gender, 'race': race, 'service_test': service_test}
 
         return sample
 
