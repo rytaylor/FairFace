@@ -72,7 +72,7 @@ if __name__ == "__main__":
     train_data = FaceImageDataset(csv_path='./fairface_label_train.csv',
                                     rootdir='./',
                                     transforms.Compose([
-                                        transforms.ToPILImage()
+                                        transforms.ToPILImage(),
                                         transforms.Resize((224, 224)),
                                         transforms.RandomCrop(224),
                                         transforms.ToTensor()
