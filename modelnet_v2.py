@@ -69,7 +69,7 @@ if __name__ == "__main__":
     #Run training & validation
 
     train_paths = FaceImageDataset(csv_path='./fairface_label_train.csv',
-                                    rootdir='/train')
+                                    rootdir='/')
 
     #format: file,age,gender,race,service_test
 
