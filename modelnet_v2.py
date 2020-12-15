@@ -40,6 +40,14 @@ if __name__ == "__main__":
     val_paths = pd.read_csv('./fairface_label_val.csv')
 
     resnet18 = models.resnet18()
+    loss_func = nn.MSELoss(reduction='sum')
+    learning_rate = 0.0001
+
+    data_loader = torch.utils.data.DataLoader(yesno_data,
+                                          batch_size=1,
+                                          shuffle=True)
+
+    resnet18()
 
     print(resnet18)
 
