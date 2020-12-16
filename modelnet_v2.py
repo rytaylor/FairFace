@@ -67,6 +67,7 @@ class FaceImageDataset(Dataset):
         service_test = 1 if service_test == True else 0
 
         labels = [age_list.index(age), gender_list.index(gender), race_list.index(race), service_test]
+        labels = [race_list.index(race)]
 
         label_tensor = torch.as_tensor(labels)
 
