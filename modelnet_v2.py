@@ -137,7 +137,7 @@ if __name__ == "__main__":
             inputs, labels = inputs.to(device), labels.to(device)
             optimizer.zero_grad()
             logps = model.forward(inputs)
-            loss = criterion(logps, labels)
+            loss = criterion(logps, torch.max(labels)[1])
             loss.backward()
             optimizer.step()
             running_loss += loss.item()
