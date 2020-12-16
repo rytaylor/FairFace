@@ -58,7 +58,7 @@ class FaceImageDataset(Dataset):
         if(self.transform):
             image = self.transform(image)
 
-        sample = {'image': image, 'age': age, 'gender': gender, 'race': race, 'service_test': service_test}
+        sample = {'image': image, 'labels':{'age': age, 'gender': gender, 'race': race, 'service_test': service_test}}
 
         return sample
 
@@ -106,7 +106,6 @@ if __name__ == "__main__":
     criterion = nn.NLLLoss()
     optimizer = optim.Adam(model.fc.parameters(), lr=0.001)
     model.to(device)
-
 
     '''predefined code'''
 
