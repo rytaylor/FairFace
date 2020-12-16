@@ -102,7 +102,7 @@ if __name__ == "__main__":
                                         transforms.RandomCrop(224),
                                         transforms.ToTensor()
                                     ]))
-    val_dataloader = torch.utils.data.DataLoader(val_data, batch_size=4,
+    val_dataloader = torch.utils.data.DataLoader(val_data, batch_size=3,
                                             shuffle=True, num_workers=0)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
