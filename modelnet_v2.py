@@ -108,8 +108,6 @@ if __name__ == "__main__":
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     #print(train_data.__getitem__(0))
-    print(train_data.classes)
-    print(train_data.class_to_idx)
 
     model = models.resnet50(pretrained=True)
 
