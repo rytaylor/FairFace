@@ -17,6 +17,7 @@ import dlib
 import pandas as pd
 import torchvision.models as models
 from skimage import io, transform
+from sklearn import preprocessing
 
 import sys
 sys.path.append('/usr/local/lib/python3.6/dist-packages')
@@ -35,10 +36,11 @@ def rect_to_bb(rect):
 
 class FaceImageDataset(Dataset):
 
-    def __init__(self, csv_path, rootdir, transform=None):
+    def __init__(self, csv_path, rootdir, encoder, transform=None):
         self.csv_file = pd.read_csv(csv_path)
         self.rootdir = rootdir
         self.transform = transform
+        self.encoder = encoder
 
     def __len__(self):
         return len(self.csv_file)
@@ -59,7 +61,11 @@ class FaceImageDataset(Dataset):
             image = self.transform(image)
 
         labels = [age, gender, race, service_test]
-        sample = [image, labels]
+
+        label_tensor = encoder.fit_transform(labels)
+        label_tensor = torch.as_tensor(label_tensor)
+
+        sample = [image, label_tensor]
 
         return sample
 
@@ -68,10 +74,12 @@ if __name__ == "__main__":
     #Also please change working directory to this file.
     dlib.DLIB_USE_CUDA = True
     print("using CUDA?: %s" % dlib.DLIB_USE_CUDA)
+    encoder = preprocessing.LabelEncoder()
     #Run training & validation
     #format: file,age,gender,race,service_test
     train_data = FaceImageDataset(csv_path='./fairface_label_train.csv',
                                     rootdir='./',
+                                    encoder = encoder,
                                     transform = transforms.Compose([
                                         transforms.ToPILImage(),
                                         transforms.Resize((224, 224)),
@@ -82,6 +90,7 @@ if __name__ == "__main__":
                                             shuffle=True, num_workers=0)
     val_data = FaceImageDataset(csv_path='./fairface_label_val.csv',
                                     rootdir='./',
+                                    encoder = encoder,
                                     transform = transforms.Compose([
                                         transforms.ToPILImage(),
                                         transforms.Resize((224, 224)),
