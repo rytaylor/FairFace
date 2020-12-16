@@ -117,6 +117,7 @@ if __name__ == "__main__":
     train_losses, val_losses = [], []
     for epoch in range(epochs):
         for inputs, labels in train_dataloader:
+            print(inputs, labels)
             steps += 1
             inputs, labels = inputs.to(device), labels.to(device)
             optimizer.zero_grad()
