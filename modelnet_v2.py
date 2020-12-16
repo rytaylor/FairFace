@@ -59,7 +59,7 @@ class FaceImageDataset(Dataset):
             image = self.transform(image)
 
         labels = [age, gender, race, service_test]
-        sample = {'image': image, 'labels': labels }
+        sample = [image, labels]
 
         return sample
 
