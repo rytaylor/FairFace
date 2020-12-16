@@ -91,7 +91,7 @@ if __name__ == "__main__":
                                         transforms.RandomCrop(224),
                                         transforms.ToTensor()
                                     ]))
-    train_dataloader = torch.utils.data.DataLoader(train_data, batch_size=3,
+    train_dataloader = torch.utils.data.DataLoader(train_data[:100], batch_size=10,
                                             shuffle=True, num_workers=0)
     val_data = FaceImageDataset(csv_path='./fairface_label_val.csv',
                                     rootdir='./',
@@ -102,7 +102,7 @@ if __name__ == "__main__":
                                         transforms.RandomCrop(224),
                                         transforms.ToTensor()
                                     ]))
-    val_dataloader = torch.utils.data.DataLoader(val_data, batch_size=3,
+    val_dataloader = torch.utils.data.DataLoader(val_data[:100], batch_size=10,
                                             shuffle=True, num_workers=0)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -135,7 +135,6 @@ if __name__ == "__main__":
             inputs, labels = inputs.to(device), labels.to(device)
             optimizer.zero_grad()
             logps = model.forward(inputs)
-            print(labels)
             loss = criterion(logps, labels)
             loss.backward()
             optimizer.step()
