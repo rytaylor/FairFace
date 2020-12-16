@@ -117,8 +117,7 @@ if __name__ == "__main__":
     model.fc = nn.Sequential(nn.Linear(2048, 512),
                                     nn.ReLU(),
                                     nn.Dropout(0.2),
-                                    nn.Linear(512, 10),
-                                    nn.LogSoftmax(dim=1))
+                                    nn.Linear(512, 4))
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.fc.parameters(), lr=0.001)
     model.to(device)
@@ -137,7 +136,7 @@ if __name__ == "__main__":
             optimizer.zero_grad()
             logps = model.forward(inputs)
             print(labels)
-            loss = criterion(logps, torch.max(labels)[1])
+            loss = criterion(logps, labels)
             loss.backward()
             optimizer.step()
             running_loss += loss.item()
