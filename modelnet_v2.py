@@ -67,7 +67,6 @@ class FaceImageDataset(Dataset):
         service_test = 1 if service_test == True else 0
 
         labels = [age_list.index(age), gender_list.index(gender), race_list.index(race), service_test]
-        labels = [race_list.index(race)]
 
         label_tensor = torch.as_tensor(labels)
 
@@ -120,7 +119,7 @@ if __name__ == "__main__":
                                     nn.Dropout(0.2),
                                     nn.Linear(512, 10),
                                     nn.LogSoftmax(dim=1))
-    criterion = nn.NLLLoss()
+    criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.fc.parameters(), lr=0.001)
     model.to(device)
 
