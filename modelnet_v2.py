@@ -60,7 +60,7 @@ class FaceImageDataset(Dataset):
         if(self.transform):
             image = self.transform(image)
 
-        age_list = ['0-2', '3-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70+']
+        age_list = ['0-2', '3-9', '10-19', '20-29', '30-39', '40-49', '50-59', '60-69', 'more than 70']
         race_list = ['White', 'Black', 'Latino_Hispanic', 'East Asian', 'Southeast Asian', 'Indian', 'Middle Eastern']
         gender_list = ['Male', 'Female']
 
