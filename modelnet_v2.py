@@ -107,7 +107,7 @@ if __name__ == "__main__":
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    print(train_data.__getitem__(0))
+    #print(train_data.__getitem__(0))
 
     model = models.resnet50(pretrained=True)
 
@@ -132,11 +132,11 @@ if __name__ == "__main__":
     train_losses, val_losses = [], []
     for epoch in range(epochs):
         for inputs, labels in train_dataloader:
-            print(inputs, labels)
             steps += 1
             inputs, labels = inputs.to(device), labels.to(device)
             optimizer.zero_grad()
             logps = model.forward(inputs)
+            print(labels)
             loss = criterion(logps, torch.max(labels)[1])
             loss.backward()
             optimizer.step()
