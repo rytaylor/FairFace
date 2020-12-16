@@ -151,8 +151,8 @@ if __name__ == "__main__":
                         logps = model.forward(inputs)
                         batch_loss = criterion(logps, labels)
                         test_loss += batch_loss.item()
-                        
                         ps = torch.exp(logps)
+                        print(ps)
                         top_p, top_class = ps.topk(1, dim=0)
                         equals = top_class == labels.view(*top_class.shape)
                         accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
