@@ -68,7 +68,7 @@ class FaceImageDataset(Dataset):
 
         labels = [age_list.index(age), gender_list.index(gender), race_list.index(race), service_test]
 
-        label_tensor = torch.as_tensor(label_tensor)
+        label_tensor = torch.as_tensor(labels)
 
         sample = [image, label_tensor]
 
