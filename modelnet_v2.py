@@ -107,6 +107,7 @@ if __name__ == "__main__":
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+    print(train_data.__getitem__(0))
 
     model = models.resnet50(pretrained=True)
 
