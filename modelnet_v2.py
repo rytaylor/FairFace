@@ -58,7 +58,8 @@ class FaceImageDataset(Dataset):
         if(self.transform):
             image = self.transform(image)
 
-        sample = {'image': image, 'labels':{'age': age, 'gender': gender, 'race': race, 'service_test': service_test}}
+        labels = [age, gender, race, service_test]
+        sample = {'image': image, 'labels': labels }
 
         return sample
 
@@ -113,7 +114,7 @@ if __name__ == "__main__":
     steps = 0
     running_loss = 0
     print_every = 10
-    train_losses, test_losses = [], []
+    train_losses, val_losses = [], []
     for epoch in range(epochs):
         for inputs, labels in train_dataloader:
             steps += 1
