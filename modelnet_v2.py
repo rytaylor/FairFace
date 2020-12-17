@@ -149,9 +149,9 @@ if __name__ == "__main__":
 
             steps += 1
             inputs, labels = inputs.to(device), labels.to(device)
-            labels_onehot = torch.FloatTensor(labels.shape[0], classes)
-            labels_onehot = labels_onehot.to(device)
-            labels_onehot.zero_()
+            #labels_onehot = torch.FloatTensor(labels.shape[0], classes)
+            #labels_onehot = labels_onehot.to(device)
+            #labels_onehot.zero_()
             #labels_onehot.scatter_(1, labels, 1)
             #print(labels_onehot)
             labels = labels.type(torch.float32)
@@ -171,12 +171,13 @@ if __name__ == "__main__":
                 with torch.no_grad():
                     for inputs, labels in val_dataloader:
                         inputs, labels = inputs.to(device), labels.to(device)
-                        labels_onehot = torch.FloatTensor(labels.shape[0], classes)
-                        labels_onehot = labels_onehot.to(device)
-                        labels_onehot.zero_()
-                        labels_onehot.scatter_(1, labels, 1)
+                        labels = labels.type(torch.float32)
+                        #labels_onehot = torch.FloatTensor(labels.shape[0], classes)
+                        #labels_onehot = labels_onehot.to(device)
+                        #labels_onehot.zero_()
+                        #labels_onehot.scatter_(1, labels, 1)
                         logps = model.forward(inputs)
-                        batch_loss = criterion(logps, labels_onehot)
+                        batch_loss = criterion(logps, labels)
                         test_loss += batch_loss.item()
                         '''
                         ps = torch.exp(logps)
@@ -186,10 +187,13 @@ if __name__ == "__main__":
                         accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
                         '''
                         ps = torch.exp(logps)
+                        print(ps[0])
                         ps[ps >= 0.5] = 1
                         ps[ps < 0.5] = 0
                         #print(ps)
                         ps *= labels
+                        print(labels)
+                        print(ps)
                         accuracy += torch.mean(ps.type(torch.FloatTensor)).item()
 
                 train_losses.append(running_loss/len(train_dataloader))
