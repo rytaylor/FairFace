@@ -149,6 +149,7 @@ if __name__ == "__main__":
 
             steps += 1
             inputs, labels = inputs.to(device), labels.to(device)
+            labels_onehot = torch.FloatTensor(labels.shape[0], classes)
             labels_onehot = labels_onehot.to(device)
             labels_onehot.zero_()
             labels_onehot.scatter_(1, labels, 1)
@@ -167,6 +168,7 @@ if __name__ == "__main__":
                     for inputs, labels in val_dataloader:
                         inputs, labels = inputs.to(device), labels.to(device)
                         print(labels.shape)
+                        labels_onehot = torch.FloatTensor(labels.shape[0], classes)
                         labels_onehot = labels_onehot.to(device)
                         labels_onehot.zero_()
                         labels_onehot.scatter_(1, labels, 1)
