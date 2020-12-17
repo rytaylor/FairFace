@@ -189,15 +189,11 @@ if __name__ == "__main__":
                         ps = torch.exp(logps)
 
 
-                        print('VALIDATION:')
-                        print('labels: ', labels[0])
-                        print('raw out: ', ps[0])
                         for i in range(ps.shape[0]):
                             ps[i][0:7] /= torch.max(ps[i][0:7])
                             ps[i][8:15] /= torch.max(ps[i][8:15])
                             ps[i][16:] /= torch.max(ps[i][16:])
                         ps[ps < 1.0] = 0.0
-                        print('sub-max: ', ps[0])
                         #print(ps)
                         ps *= labels
                         for i in range(ps.shape[0]):
