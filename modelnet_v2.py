@@ -142,13 +142,14 @@ if __name__ == "__main__":
     print_every = 10
     train_losses, val_losses = [], []
     labels_onehot = torch.FloatTensor(batch_size, classes)
+    labels_onehot = labels_onehot.to(device)
 
     for epoch in range(epochs):
         for inputs, labels in train_dataloader:
 
             steps += 1
             inputs, labels = inputs.to(device), labels.to(device)
-            labels_onehot.to(device)
+            labels_onehot = labels_onehot.to(device)
             labels_onehot.zero_()
             labels_onehot.scatter_(1, labels, 1)
             optimizer.zero_grad()
@@ -165,7 +166,7 @@ if __name__ == "__main__":
                 with torch.no_grad():
                     for inputs, labels in val_dataloader:
                         inputs, labels = inputs.to(device), labels.to(device)
-                        labels_onehot.to(device)
+                        labels_onehot = labels_onehot.to(device)
                         labels_onehot.zero_()
                         labels_onehot.scatter_(1, labels, 1)
                         logps = model.forward(inputs)
