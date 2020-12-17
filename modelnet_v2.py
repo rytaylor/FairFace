@@ -155,11 +155,11 @@ if __name__ == "__main__":
             #labels_onehot.scatter_(1, labels, 1)
             #print(labels_onehot)
             labels = labels.type(torch.float32)
-            print(labels)
+            #print(labels)
             optimizer.zero_grad()
             logps = model.forward(inputs)
             loss = criterion(logps, labels)
-            print(loss)
+            #print(loss)
             loss.backward()
             optimizer.step()
             running_loss += loss.item()
@@ -200,6 +200,7 @@ if __name__ == "__main__":
                             accuracy += (0.33 * torch.max(ps[i][0:7]))
                             accuracy += (0.33 * torch.max(ps[i][8:15]))
                             accuracy += (0.33 * torch.max(ps[i][16:]))
+                        accuracy /= ps.shape[0]
                         #accuracy += torch.mean(ps.type(torch.FloatTensor)).item()
 
                 train_losses.append(running_loss/len(train_dataloader))
