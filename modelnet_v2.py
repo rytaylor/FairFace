@@ -187,13 +187,13 @@ if __name__ == "__main__":
                         accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
                         '''
                         ps = torch.exp(logps)
-                        ps[ps >= 0.5] = 1
-                        ps[ps < 0.5] = 0
-                        #print(ps)
-                        ps *= labels
                         print('VALIDATION:')
+                        print(ps[0])
+                        ps /= torch.max(ps)
                         print(labels[0])
                         print(ps[0])
+                        #print(ps)
+                        ps *= labels
                         accuracy += torch.mean(ps.type(torch.FloatTensor)).item()
 
                 train_losses.append(running_loss/len(train_dataloader))
