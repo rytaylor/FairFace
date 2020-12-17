@@ -182,10 +182,15 @@ if __name__ == "__main__":
                         print(logps)
                         ps = torch.exp(logps)
                         print(ps)
-                        ps[ps > 0.5] = 1
+                        ps[ps >= 0.5] = 1
+                        ps[ps < 0.5] = 0
                         print(ps)
 
-                        accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
+                        ps *= labels
+
+                        print(ps)
+
+                        accuracy += torch.mean(ps.type(torch.FloatTensor)).item()
 
                 train_losses.append(running_loss/len(train_dataloader))
                 val_losses.append(test_loss/len(val_dataloader))                    
