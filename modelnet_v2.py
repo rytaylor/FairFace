@@ -74,11 +74,7 @@ class FaceImageDataset(Dataset):
 
         return sample
 
-if __name__ == "__main__":
-    #Please create a csv with one column 'img_path', contains the full paths of all images to be analyzed.
-    #Also please change working directory to this file.
-    dlib.DLIB_USE_CUDA = True
-    print("using CUDA?: %s" % dlib.DLIB_USE_CUDA)
+def startFrozenTrain():
     encoder = preprocessing.LabelEncoder()
     #Run training & validation
     #format: file,age,gender,race,service_test
@@ -117,7 +113,7 @@ if __name__ == "__main__":
     model.fc = nn.Sequential(nn.Linear(2048, 512),
                                     nn.ReLU(),
                                     nn.Dropout(0.2),
-                                    nn.Linear(512, 4))
+                                    nn.Linear(512, 18))
     criterion = nn.MultiLabelMarginLoss()
     optimizer = optim.Adam(model.fc.parameters(), lr=0.001)
     model.to(device)
@@ -169,4 +165,32 @@ if __name__ == "__main__":
                 running_loss = 0
                 model.train()
     torch.save(model, 'fairface_res.pth')
+
+
+def runModelTest(data_from_path=''):
+    model = models.resnet50(pretrained=True)
+    model.fc = nn.Sequential(nn.Linear(2048, 512),
+                                    nn.ReLU(),
+                                    nn.Dropout(0.2),
+                                    nn.Linear(512, 18))
+    model.load_state_dict(torch.load('fairface_res.pth'))
+    model.eval()
+
+    trans = transforms.Compose([
+        transforms.ToPILImage(),
+        transforms.Resize((224, 224)),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    ])
+
+    img_names = [os.path.join(imgs_path, x) for x in os.listdir(imgs_path)]
+
+    
+if __name__ == "__main__":
+    #Please create a csv with one column 'img_path', contains the full paths of all images to be analyzed.
+    #Also please change working directory to this file.
+    dlib.DLIB_USE_CUDA = True
+    print("using CUDA?: %s" % dlib.DLIB_USE_CUDA)
+    
+    runModelTest()
     
