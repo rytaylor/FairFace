@@ -167,7 +167,6 @@ if __name__ == "__main__":
                 with torch.no_grad():
                     for inputs, labels in val_dataloader:
                         inputs, labels = inputs.to(device), labels.to(device)
-                        print(labels.shape)
                         labels_onehot = torch.FloatTensor(labels.shape[0], classes)
                         labels_onehot = labels_onehot.to(device)
                         labels_onehot.zero_()
