@@ -188,13 +188,11 @@ if __name__ == "__main__":
                         '''
                         ps = torch.exp(logps)
 
-                        print(labels - ps)
 
                         print('VALIDATION:')
-                        print(ps[0])
-                        ps /= torch.max(ps)
-                        print(labels[0])
-                        print(ps[0])
+                        print('labels: ', labels[0])
+                        print('raw out: ', ps[0])
+                        print('sub-max: ', ps[0]/torch.max(ps[0][0:8]))
                         #print(ps)
                         ps *= labels
                         accuracy += torch.mean(ps.type(torch.FloatTensor)).item()
