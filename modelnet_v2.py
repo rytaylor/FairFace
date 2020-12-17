@@ -66,7 +66,10 @@ class FaceImageDataset(Dataset):
 
         service_test = 1 if service_test == True else 0
 
-        labels = [age_list.index(age), gender_list.index(gender), race_list.index(race), service_test]
+        labels = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        labels[age_list.index(age)] = 1
+        labels[9+race_list.index(race)] = 1
+        labels[16+gender_list.index(gender)] = 1
 
         label_tensor = torch.as_tensor(labels)
 
@@ -74,7 +77,12 @@ class FaceImageDataset(Dataset):
 
         return sample
 
-def startFrozenTrain():
+if __name__ == "__main__":
+    #Please create a csv with one column 'img_path', contains the full paths of all images to be analyzed.
+    #Also please change working directory to this file.
+    dlib.DLIB_USE_CUDA = True
+    print("using CUDA?: %s" % dlib.DLIB_USE_CUDA)
+    
     encoder = preprocessing.LabelEncoder()
     #Run training & validation
     #format: file,age,gender,race,service_test
@@ -105,6 +113,8 @@ def startFrozenTrain():
 
     #print(train_data.__getitem__(0))
 
+    print(train_data.__getitem__(0))
+    
     model = models.resnet50(pretrained=True)
 
     for param in model.parameters():
@@ -164,33 +174,4 @@ def startFrozenTrain():
                     f"Test accuracy: {accuracy/len(val_dataloader):.3f}")
                 running_loss = 0
                 model.train()
-    torch.save(model, 'fairface_res.pth')
-
-
-def runModelTest(data_from_path=''):
-    model = models.resnet50(pretrained=True)
-    model.fc = nn.Sequential(nn.Linear(2048, 512),
-                                    nn.ReLU(),
-                                    nn.Dropout(0.2),
-                                    nn.Linear(512, 18))
-    model.load_state_dict(torch.load('fairface_res.pth'))
-    model.eval()
-
-    trans = transforms.Compose([
-        transforms.ToPILImage(),
-        transforms.Resize((224, 224)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    ])
-
-    img_names = [os.path.join(imgs_path, x) for x in os.listdir(imgs_path)]
-
-    
-if __name__ == "__main__":
-    #Please create a csv with one column 'img_path', contains the full paths of all images to be analyzed.
-    #Also please change working directory to this file.
-    dlib.DLIB_USE_CUDA = True
-    print("using CUDA?: %s" % dlib.DLIB_USE_CUDA)
-    
-    runModelTest()
-    
+    torch.save(model, 'fairface_res1.pth')
