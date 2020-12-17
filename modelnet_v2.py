@@ -148,6 +148,7 @@ if __name__ == "__main__":
 
             steps += 1
             inputs, labels = inputs.to(device), labels.to(device)
+            labels_onehot.to(device)
             labels_onehot.zero_()
             labels_onehot.scatter_(1, labels, 1)
             optimizer.zero_grad()
@@ -164,6 +165,7 @@ if __name__ == "__main__":
                 with torch.no_grad():
                     for inputs, labels in val_dataloader:
                         inputs, labels = inputs.to(device), labels.to(device)
+                        labels_onehot.to(device)
                         labels_onehot.zero_()
                         labels_onehot.scatter_(1, labels, 1)
                         logps = model.forward(inputs)
