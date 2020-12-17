@@ -154,7 +154,7 @@ if __name__ == "__main__":
             labels_onehot.zero_()
             #labels_onehot.scatter_(1, labels, 1)
             #print(labels_onehot)
-            labels = labels.type_as(torch.float32)
+            labels = labels.type(torch.float32)
             print(labels)
             optimizer.zero_grad()
             logps = model.forward(inputs)
