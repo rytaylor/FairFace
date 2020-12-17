@@ -196,8 +196,10 @@ if __name__ == "__main__":
                             ps[i][0:7] /= torch.max(ps[i][0:7])
                             ps[i][8:15] /= torch.max(ps[i][8:15])
                             ps[i][16:] /= torch.max(ps[i][16:])
+                        ps[ps < 1.0] = 0.0
                         print('sub-max: ', ps[0])
                         #print(ps)
+
                         ps *= labels
                         accuracy += torch.mean(ps.type(torch.FloatTensor)).item()
 
