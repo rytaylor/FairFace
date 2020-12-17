@@ -114,7 +114,7 @@ if __name__ == "__main__":
     #print(train_data.__getitem__(0))
 
     print(train_data.__getitem__(0))
-    
+
     model = models.resnet50(pretrained=True)
 
     for param in model.parameters():
@@ -124,7 +124,7 @@ if __name__ == "__main__":
                                     nn.ReLU(),
                                     nn.Dropout(0.2),
                                     nn.Linear(512, 18))
-    criterion = nn.MultiLabelMarginLoss()
+    criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.fc.parameters(), lr=0.001)
     model.to(device)
 
@@ -174,4 +174,5 @@ if __name__ == "__main__":
                     f"Test accuracy: {accuracy/len(val_dataloader):.3f}")
                 running_loss = 0
                 model.train()
+                torch.save(model, 'fairface_res1.pth')
     torch.save(model, 'fairface_res1.pth')
