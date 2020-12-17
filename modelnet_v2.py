@@ -192,9 +192,9 @@ if __name__ == "__main__":
                         print('VALIDATION:')
                         print('labels: ', labels[0])
                         print('raw out: ', ps[0])
-                        ps[0][0:7] /= torch.max(ps[0][0:7])
-                        ps[0][8:15] /= torch.max(ps[0][8:15])
-                        ps[0][16:] /= torch.max(ps[0][16:])
+                        ps[:][0:7] /= torch.max(ps[0][0:7])
+                        ps[:][8:15] /= torch.max(ps[0][8:15])
+                        ps[:][16:] /= torch.max(ps[0][16:])
                         print('sub-max: ', ps[0])
                         #print(ps)
                         ps *= labels
