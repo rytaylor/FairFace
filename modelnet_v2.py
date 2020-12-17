@@ -187,6 +187,11 @@ if __name__ == "__main__":
                         accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
                         '''
                         ps = torch.exp(logps)
+
+                        print(ps[:][0:8])
+
+                        print(torch.max(ps))
+
                         print('VALIDATION:')
                         print(ps[0])
                         ps /= torch.max(ps)
