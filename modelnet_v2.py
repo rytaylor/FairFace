@@ -199,9 +199,12 @@ if __name__ == "__main__":
                         ps[ps < 1.0] = 0.0
                         print('sub-max: ', ps[0])
                         #print(ps)
-
                         ps *= labels
-                        accuracy += torch.mean(ps.type(torch.FloatTensor)).item()
+                        for i in range(ps.shape[0]):
+                            accuracy += (0.33 * torch.max(ps[i][0:7]))
+                            accuracy += (0.33 * torch.max(ps[i][8:15]))
+                            accuracy += (0.33 * torch.max(ps[i][16:]))
+                        #accuracy += torch.mean(ps.type(torch.FloatTensor)).item()
 
                 train_losses.append(running_loss/len(train_dataloader))
                 val_losses.append(test_loss/len(val_dataloader))                    
