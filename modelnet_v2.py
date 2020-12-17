@@ -82,6 +82,10 @@ if __name__ == "__main__":
     #Also please change working directory to this file.
     dlib.DLIB_USE_CUDA = True
     print("using CUDA?: %s" % dlib.DLIB_USE_CUDA)
+
+    epochs = 1
+    batch_size = 50
+    classes = 18
     
     encoder = preprocessing.LabelEncoder()
     #Run training & validation
@@ -95,7 +99,7 @@ if __name__ == "__main__":
                                         transforms.RandomCrop(224),
                                         transforms.ToTensor()
                                     ]))
-    train_dataloader = torch.utils.data.DataLoader(train_data, batch_size=50,
+    train_dataloader = torch.utils.data.DataLoader(train_data, batch_size=batch_size,
                                             shuffle=True, num_workers=0)
     val_data = FaceImageDataset(csv_path='./fairface_label_val.csv',
                                     rootdir='./',
@@ -106,7 +110,7 @@ if __name__ == "__main__":
                                         transforms.RandomCrop(224),
                                         transforms.ToTensor()
                                     ]))
-    val_dataloader = torch.utils.data.DataLoader(val_data, batch_size=50,
+    val_dataloader = torch.utils.data.DataLoader(val_data, batch_size=batch_size,
                                             shuffle=True, num_workers=0)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -123,7 +127,7 @@ if __name__ == "__main__":
     model.fc = nn.Sequential(nn.Linear(2048, 512),
                                     nn.ReLU(),
                                     nn.Dropout(0.2),
-                                    nn.Linear(512, 18))
+                                    nn.Linear(512, classes))
     criterion = nn.BCEWithLogitsLoss()
     optimizer = optim.Adam(model.fc.parameters(), lr=0.001)
     model.to(device)
@@ -131,17 +135,24 @@ if __name__ == "__main__":
     '''predefined code'''
 
     epochs = 1
+    batch_size = 50
+    classes = 18
     steps = 0
     running_loss = 0
     print_every = 10
     train_losses, val_losses = [], []
+    labels_onehot = torch.FloatTensor(batch_size, classes)
+
     for epoch in range(epochs):
         for inputs, labels in train_dataloader:
+
             steps += 1
             inputs, labels = inputs.to(device), labels.to(device)
+            labels_onehot.zero_()
+            labels_onehot.scatter_(1, labels, 1)
             optimizer.zero_grad()
             logps = model.forward(inputs)
-            loss = criterion(logps, labels)
+            loss = criterion(logps, labels_onehot)
             loss.backward()
             optimizer.step()
             running_loss += loss.item()
@@ -153,8 +164,10 @@ if __name__ == "__main__":
                 with torch.no_grad():
                     for inputs, labels in val_dataloader:
                         inputs, labels = inputs.to(device), labels.to(device)
+                        labels_onehot.zero_()
+                        labels_onehot.scatter_(1, labels, 1)
                         logps = model.forward(inputs)
-                        batch_loss = criterion(logps, labels)
+                        batch_loss = criterion(logps, labels_onehot)
                         test_loss += batch_loss.item()
                         '''
                         ps = torch.exp(logps)
@@ -163,9 +176,11 @@ if __name__ == "__main__":
                         equals = top_class == labels.view(*top_class.shape)
                         accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
                         '''
-                        outputs = torch.sigmoid(logps)
-                        outputs[outputs >= 0.5] = 1
-                        accuracy += (outputs == labels).sum()
+                        print(logps)
+                        ps = torch.exp(logps)
+                        top_p, top_class = ps.topk(1, dim=0)
+                        equals = top_class == labels.view(*top_class.shape)
+                        accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
                 train_losses.append(running_loss/len(train_dataloader))
                 val_losses.append(test_loss/len(val_dataloader))                    
                 print(f"Epoch {epoch+1}/{epochs}.. "
