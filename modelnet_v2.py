@@ -188,7 +188,7 @@ if __name__ == "__main__":
                         '''
                         ps = torch.exp(logps)
 
-                        print(ps - labels)
+                        print(labels - ps)
 
                         print('VALIDATION:')
                         print(ps[0])
