@@ -188,9 +188,7 @@ if __name__ == "__main__":
                         '''
                         ps = torch.exp(logps)
 
-                        print(ps[:][0:8])
-
-                        print(torch.max(ps))
+                        print(ps[0][0:8])
 
                         print('VALIDATION:')
                         print(ps[0])
