@@ -181,7 +181,7 @@ if __name__ == "__main__":
                         '''
                         print(logps)
                         ps = torch.exp(logps)
-                        top_p, top_class = ps.topk(1, dim=0)
+                        top_p, top_class = ps.topk(1, dim=1)
                         equals = top_class == labels.view(*top_class.shape)
                         accuracy += torch.mean(equals.type(torch.FloatTensor)).item()
                 train_losses.append(running_loss/len(train_dataloader))
