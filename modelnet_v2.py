@@ -124,7 +124,7 @@ if __name__ == "__main__":
                                     nn.ReLU(),
                                     nn.Dropout(0.2),
                                     nn.Linear(512, 18))
-    criterion = nn.CrossEntropyLoss()
+    criterion = nn.BCEWithLogitsLoss()
     optimizer = optim.Adam(model.fc.parameters(), lr=0.001)
     model.to(device)
 
