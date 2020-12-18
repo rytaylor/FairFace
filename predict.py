@@ -111,9 +111,9 @@ def predict_age_gender_race(save_prediction_at, imgs_path = 'cropped_faces/'):
         outputs = outputs.cpu().detach().numpy()
         outputs = np.squeeze(outputs)
 
-        race_outputs = outputs[:7]
-        gender_outputs = outputs[7:9]
-        age_outputs = outputs[9:18]
+        race_outputs = outputs[9:15]
+        gender_outputs = outputs[16:]
+        age_outputs = outputs[:8]
 
         race_score = np.exp(race_outputs) / np.sum(np.exp(race_outputs))
         gender_score = np.exp(gender_outputs) / np.sum(np.exp(gender_outputs))
